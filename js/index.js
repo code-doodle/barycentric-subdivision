@@ -1,3 +1,6 @@
+import { Polygon } from './barycentric-subdivision/polygon.js';
+import { recursiveSubdivision } from './barycentric-subdivision/recursive-subdivision.js';
+
 const width = window.innerWidth;
 const height = window.innerHeight;
 
@@ -9,26 +12,21 @@ paper.setup(canvas);
 
 let size = Math.min(width, height);
 
-let polygon = new Polygon([
-    {x: 0, y: 0},
-    {x: size, y: 0},
-    {x: size, y: size},
-    {x: 0, y: size}
-]);
+let polygon = new Polygon({
+    vertices: [
+        {x: 0, y: 0},
+        {x: size, y: 0},
+        {x: size, y: size},
+        {x: 0, y: size}
+    ]
+});
 
-let iterations = 3;
-let current = [polygon];
-let next = [];
+let subdivisions = recursiveSubdivision({
+    polygons: [polygon],
+    iterations: 3
+});
 
-for(let i = 0; i < iterations; i++) {
-    current.forEach(polygon => {
-        next = next.concat(polygon.subdivide());
-    });
-    current = next;
-    next = [];
-}
-
-current.forEach((polygon, index) => {
+subdivisions.forEach((polygon, index) => {
     //let color = paper.Color.random();
     let path = new paper.Path(polygon.vertices);
     //path.strokeWidth = 1;
