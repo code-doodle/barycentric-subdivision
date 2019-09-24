@@ -1,5 +1,6 @@
 import { Polygon } from './barycentric-subdivision/polygon.js';
 import { recursiveSubdivision } from './barycentric-subdivision/recursive-subdivision.js';
+import { regularPolygon } from './utils.js';
 
 const width = window.innerWidth;
 const height = window.innerHeight;
@@ -10,21 +11,14 @@ canvas.height = height;
 
 paper.setup(canvas);
 
-let size = Math.min(width, height);
+let size = (Math.min(width, height) / 2) * 0.9;
 
 let polygon = new Polygon({
-    vertices: [
-        {x: 0, y: 0},
-        {x: size, y: 0},
-        {x: size, y: size},
-        {x: 0, y: size}
-    ]
+    vertices: regularPolygon({center: paper.project.view.center, radius: size, sides: 3})
 });
 
-let subdivisions = recursiveSubdivision({
-    polygons: [polygon],
-    iterations: 3
-});
+let subdivisions = recursiveSubdivision({polygons: [polygon], iterations: 3});
+
 
 subdivisions.forEach((polygon, index) => {
     //let color = paper.Color.random();
